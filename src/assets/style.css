@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+.container {
+  @apply max-w-[80%] mx-auto;
+}
+
+.primary-btn {
+  @apply py-1 px-2 rounded-full bg-amber-50 text-black font-semibold hover:cursor-pointer;
+}
+
+.sidebar-item {
+  @apply px-2 py-3 hover:bg-white/10 rounded-md;
+}
+
+.act-btn {
+  @apply rounded-full p-2 hover:bg-white/20;
+}
