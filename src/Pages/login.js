@@ -1,21 +1,17 @@
 import { registerAPi } from "../Services/auth.service";
 import { loginAPi } from "../Services/auth.service";
-export const Login = (container) => ({
+
+export const Login = () => ({
   init() {
-    this.render();
+    const container = document.querySelector(".content");
+    container.innerHTML = this.template();
     this.bindEvents();
     this.registerEvens();
     this.login();
-    this.showError();
-    this.clearError();
   },
-
-  render() {
-    container.innerHTML = this.template();
-  },
-
   template() {
-    return ` <div
+    return ` 
+    <div
         class=" bg-cover bg-center w-full h-screen flex justify-center items-center"
         style="background-image: url('images/81fbc741-caf6-49b9-b198-f5f80def8b9c.png')">
         <form id="login-form" class =" auth-form p-9 w-[400px] rounded-xl bg-white/10 backdrop-blur-xl shadow-xl border border-white/20">
@@ -60,7 +56,9 @@ export const Login = (container) => ({
         </form>
         </div>`;
   },
+
   bindEvents() {
+    const container = document.querySelector(".content");
     container.addEventListener("click", (e) => {
       if (e.target.dataset.action === "toggle") {
         this.toggleForm();
@@ -69,12 +67,14 @@ export const Login = (container) => ({
   },
 
   toggleForm() {
+    const container = document.querySelector(".content");
     container.querySelector("#login-form").classList.toggle("hidden");
     container.querySelector("#register-form").classList.toggle("hidden");
   },
 
   // LOGIN
   login() {
+    const container = document.querySelector(".content");
     container.addEventListener("submit", async (e) => {
       if (e.target.id != "login-form") return;
       e.preventDefault();
@@ -116,6 +116,7 @@ export const Login = (container) => ({
             localStorage.setItem("refresh_token", token.refresh_token);
           }
           alert("Đăng nhập thành công!");
+          window.location.href = "/";
         } catch (err) {
           alert("Đăng nhập thất bại!");
         }
@@ -124,6 +125,7 @@ export const Login = (container) => ({
   },
   // REGISTER
   registerEvens() {
+    const container = document.querySelector(".content");
     container.addEventListener("submit", async (e) => {
       if (e.target.id != "register-form") return;
       e.preventDefault();
@@ -198,8 +200,9 @@ export const Login = (container) => ({
           const token = await registerAPi(formData);
           localStorage.setItem("access_token", token.access_token);
           localStorage.setItem("refresh_token", token.refresh_token);
-          localStorage.setItem("access_token", JSON.stringify(token.user));
+          localStorage.setItem("user", JSON.stringify(token.user));
           alert("Đăng ký thành công!");
+          window.location.href = "/";
         } catch (err) {
           alert("Đăng ký thất bại!");
         }
@@ -209,7 +212,11 @@ export const Login = (container) => ({
 
   // Loi de trong input
   showError(inputEl, message) {
-    let error = inputEl.parentElement.querySelector(".error");
+    if (!inputEl) return;
+
+    const parent = inputEl.parentElement;
+    if (!parent) return;
+    let error = parent.querySelector(".error");
     if (!error) {
       error = document.createElement("span");
       error.innerHTML = `
