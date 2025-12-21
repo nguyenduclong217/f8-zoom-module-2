@@ -130,68 +130,6 @@ export const MoodPage = (mood) => ({
       .join("");
   },
 
-  // async getData3() {
-  //   const data = await todayHitApi();
-  //   this.renderTask3(data);
-  // },
-  // renderTask3(tasks) {
-  //   const taskListEl = document.querySelector(".Featured");
-  //   if (!taskListEl) return;
-  //   taskListEl.innerHTML = tasks
-  //     .map(
-  //       (task) =>
-  //         `
-  //       <a href="#" data-navigo class="group hover:bg-white/10 rounded-lg mt-0 transition cursor-pointer flex shrink-0 w-[230px]  ">
-  //       <div class="p-1">
-  //       <div class="relative overflow-hidden rounded-[12px] w-[220px] h-[220px]">
-  //       <img src="${task.thumbnails}" alt="img" class=" w-full h-full object-cover">
-  //       <div class="overlay absolute inset-0 flex bg-black/50 justify-center opacity-0 group-hover:opacity-100 transition">
-  //       <span class="play text-[1.3rem] text-white/60 flex items-center"><i class="fa-regular fa-circle-play"></i></span>
-  //     </div>
-
-  //       </div>
-
-  //       <div class="mt-2">
-  //       <h3 class="text-sm text-white font-semibold">${task.title}</h3>
-  //       <p class="text-sm text-white/40">${task.artists} </p>
-  //       </div>
-  //       </div>
-  //       </a>
-  //       `
-  //     )
-  //     .join("");
-  // },
-  // async getData4() {
-  //   const data = await todayHitApi();
-  //   this.renderTask3(data);
-  // },
-  // renderTask4(tasks) {
-  //   const taskListEl = document.querySelector(".More picks");
-  //   if (!taskListEl) return;
-  //   taskListEl.innerHTML = tasks
-  //     .map(
-  //       (task) =>
-  //         `
-  //       <a href="#" data-navigo class="group hover:bg-white/10 rounded-lg mt-0 transition cursor-pointer flex shrink-0 w-[230px]  ">
-  //       <div class="p-1">
-  //       <div class="relative overflow-hidden rounded-[12px] w-[220px] h-[220px]">
-  //       <img src="${task.thumbnails}" alt="img" class=" w-full h-full object-cover">
-  //       <div class="overlay absolute inset-0 flex bg-black/50 justify-center opacity-0 group-hover:opacity-100 transition">
-  //       <span class="play text-[1.3rem] text-white/60 flex items-center"><i class="fa-regular fa-circle-play"></i></span>
-  //     </div>
-
-  //       </div>
-
-  //       <div class="mt-2">
-  //       <h3 class="text-sm text-white font-semibold">${task.title}</h3>
-  //       <p class="text-sm text-white/40">${task.artists} </p>
-  //       </div>
-  //       </div>
-  //       </a>
-  //       `
-  //     )
-  //     .join("");
-  // },
   async loadQuickPicks() {
     const data = await listQuick({ mood: this.mood });
     // console.log("Quick picks:", data);

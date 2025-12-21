@@ -8,10 +8,14 @@ import { profile } from "./Pages/auth.js/profile";
 import { changePassword } from "./Pages/auth.js/chance-password";
 import { library } from "./Pages/library";
 import { MoodPage } from "./Pages/moods/energize";
+import { musicPlay1 } from "./Pages/playlist/musicPlay1";
 import { playList1 } from "./Pages/playlist/playlist1";
 import { albumList1 } from "./Pages/listAlbum/albumhome1";
 import { new_releases } from "./Pages/KhamphaPage/new-releases";
 import { charts } from "./Pages/KhamphaPage/charts";
+import { moods_and_genres } from "./Pages/KhamphaPage/moods-and-genres";
+import { categoriesList } from "./Pages/listAlbum/categoriesList";
+import { linesList } from "./Pages/listAlbum/linesList";
 // import { albumList2 } from "./Pages/listAlbum/albumhome2";
 // import { playList1 } from "./Pages/playlist/playlist1";
 
@@ -86,6 +90,12 @@ router
     await albumPage1.init();
     hideLoading();
   })
+  .on("/songs/details/:id", async ({ data }) => {
+    const { id } = data;
+    const musicPlayPage1 = musicPlay1(id);
+    await musicPlayPage1.init();
+    hideLoading();
+  })
   .on("/new-releases", async () => {
     const newPage = new_releases();
     await newPage.init();
@@ -94,6 +104,23 @@ router
   .on("/charts", async () => {
     const chartsPage = charts();
     await chartsPage.init();
+    hideLoading();
+  })
+  .on("/moods-and-genres", async () => {
+    const moodsPage = moods_and_genres();
+    await moodsPage.init();
+    hideLoading();
+  })
+  .on("/categories/:slug", async ({ data }) => {
+    const { slug } = data;
+    const categoriesPage = categoriesList(slug);
+    await categoriesPage.init();
+    hideLoading();
+  })
+  .on("/lines/:slug", async ({ data }) => {
+    const { slug } = data;
+    const categoriesPage = linesList(slug);
+    await categoriesPage.init();
     hideLoading();
   });
 

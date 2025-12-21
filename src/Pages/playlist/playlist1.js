@@ -21,6 +21,7 @@ export const playList1 = (mood) => ({
   },
   async loadQuickPicks() {
     const data = await listItemsQuick(this.slug);
+    console.log(data);
     const totalSeconds = data.tracks.reduce(
       (sum, track) => sum + track.duration,
       0
@@ -83,7 +84,7 @@ export const playList1 = (mood) => ({
       .map(
         (task, index) => `
        <a
-  href="#"
+  href="/songs/details/${task.id}"
   class="group flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 transition"
 >
 

@@ -109,6 +109,14 @@ export const listAlbum1 = async (slug) => {
   const data = await response.json();
   return data;
 };
+// playListHome1
+export const listAlbumPlay = async (id) => {
+  const response = await fetch(`${config.BASE_URL}/songs/details/${id}`);
+  if (!response.ok) return;
+  const data = await response.json();
+  console.log(data);
+  return data;
+};
 
 //  kham pha
 export const newAlbums = async () => {
@@ -250,5 +258,65 @@ export const playlists = async () => {
 export const newReleases = async () => {
   const response = await fetch(`${config.BASE_URL}/explore/new-releases`);
   const data = response.json();
+  return data;
+};
+
+//Bảng xếp hạng video
+
+export const topVideo = async (key) => {
+  const response = await fetch(
+    `${config.BASE_URL}/charts/videos?country=${key}`
+  );
+  const data = response.json();
+  console.log(data);
+  return data;
+};
+
+// Bang xep hang ca si
+export const topSinger = async (key) => {
+  const response = await fetch(
+    `${config.BASE_URL}/charts/top-artists?country=${key}`
+  );
+  const data = response.json();
+  console.log(data);
+  return data;
+};
+
+export const linesApi = async () => {
+  const response = await fetch(`${config.BASE_URL}/lines`);
+  const data = response.json();
+  return data;
+};
+
+// categories
+export const categoriesApi = async () => {
+  const response = await fetch(`${config.BASE_URL}/categories`);
+  const data = response.json();
+  return data;
+};
+// categories slug
+export const listCategoriesApi = async (slug) => {
+  const response = await fetch(`${config.BASE_URL}/categories/${slug}`);
+  if (!response.ok) return;
+  const data = await response.json();
+  return data;
+};
+//lines
+export const linesSongs = async (slug) => {
+  const response = await fetch(`${config.BASE_URL}/lines/${slug}/songs`);
+  if (!response.ok) return;
+  const data = await response.json();
+  return data;
+};
+export const linesAlbum = async (slug) => {
+  const response = await fetch(`${config.BASE_URL}/lines/${slug}/albums`);
+  if (!response.ok) return;
+  const data = await response.json();
+  return data;
+};
+export const linesVideo = async (slug) => {
+  const response = await fetch(`${config.BASE_URL}/lines/${slug}/videos`);
+  if (!response.ok) return;
+  const data = await response.json();
   return data;
 };

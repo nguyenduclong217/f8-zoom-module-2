@@ -91,7 +91,7 @@ export const albumList1 = (mood) => ({
       .map(
         (task, index) => `
          <a
-    href="#"
+    href="/songs/details/${task.id}"
     class="group flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 transition"
   >
   

@@ -20,7 +20,7 @@ export const khamPha = () => ({
     <span>Bảng xếp hạng </span>
     </a>
 
-    <a href="#" class="flex items-center w-[33%] gap-3 px-5 py-5 bg-white/10 rounded-xl text-md font-bold text-white hover:bg-white/20 transition cursor-pointer">
+    <a href="/moods-and-genres" data-navigo class="flex items-center w-[33%] gap-3 px-5 py-5 bg-white/10 rounded-xl text-md font-bold text-white hover:bg-white/20 transition cursor-pointer">
     <i class="fa-regular fa-face-smile text-2xl"></i>
     <span>Tâm trạng và thể loại</span>
     </a>
@@ -83,7 +83,7 @@ export const khamPha = () => ({
       .map(
         (task) =>
           `
-        <a href="#" data-navigo class="group hover:bg-white/10 rounded-lg mt-0 transition cursor-pointer flex shrink-0 w-[230px]  ">
+        <a href="/albums/details/${task.slug}" data-navigo class="group hover:bg-white/10 rounded-lg mt-0 transition cursor-pointer flex shrink-0 w-[230px]  ">
         <div class="p-1">
         <div class="relative overflow-hidden rounded-[12px] w-[220px] h-[220px]">
         <img src="${task.thumb}" alt="img" class=" w-full h-full object-cover">
@@ -113,7 +113,7 @@ export const khamPha = () => ({
       .map((task) => {
         const viewK = Math.floor(task.views / 1000);
         return `
-        <a href="#" data-navigo class="group hover:bg-white/10 rounded-lg mt-0 transition cursor-pointer flex shrink-0 w-[230px]  ">
+        <a href="/albums/details/${task.slug}" data-navigo class="group hover:bg-white/10 rounded-lg mt-0 transition cursor-pointer flex shrink-0 w-[230px]  ">
         <div class="p-1">
         <div class="relative overflow-hidden rounded-[12px] w-[220px] h-[220px]">
         <img src="${task.thumb}" alt="img" class=" w-full h-full object-cover">
@@ -146,26 +146,6 @@ export const khamPha = () => ({
     const columns = this.chuckArray(items, 4);
     this.renderMoods(columns);
   },
-  //   renderTask3(columns) {
-  //     const taskListEl = document.querySelector(".list-moods");
-  //     taskListEl.innerHTML = columns
-  //       .map(
-  //         (col) =>
-  //           `
-  //       <div class="flex flex-col gap-3">
-  //       ${col
-  //         .map(
-  //           (item) => `
-  //         <div class="text-sm text-white bg-white/10 hover:bg-white/20">${item.name}</div>
-  //         `
-  //         )
-  //         .join("")}
-  //       </div>
-
-  //     `
-  //       )
-  //       .join("");
-  //   },
   chuckArray(arr, size) {
     const result = [];
     for (let i = 0; i < arr.length; i += size) {
@@ -197,13 +177,13 @@ export const khamPha = () => ({
   renderItem(item) {
     if (item.type === "category") {
       return `
-      <div 
+      <a href="/categories/${item.slug}" 
         data-id="${item.id}"
         data-type="category"
         class="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 
                text-white text-sm cursor-pointer">
         ${item.name}
-      </div>
+      </a>
     `;
     }
 
@@ -224,8 +204,6 @@ export const khamPha = () => ({
 
       const id = item.dataset.id;
       const type = item.dataset.type;
-
-      console.log("Filter:", type, id);
     });
   },
 });
