@@ -1,5 +1,5 @@
 import { router } from "../routerr";
-import { infoUser } from "../Services/auth.service";
+import { hintSearch, infoUser } from "../Services/auth.service";
 
 export const Header = () => ({
   init() {
@@ -11,6 +11,7 @@ export const Header = () => ({
     headerEl.innerHTML = this.template();
     this.btnMenu();
     this.getData();
+    this.getData3();
 
     // this.listBtn();
   },
@@ -23,7 +24,7 @@ export const Header = () => ({
               <button id="sidebar-btn" class="act-btn cursor-pointer">
                 <i class="fa-solid fa-bars text-xl"></i>
               </button>
-              <a href="#" class="flex items-center gap-2"
+              <a href="/" class="flex items-center gap-2"
                 ><img
                   src="./public/images/logo (2).png"
                   alt="logo"
@@ -34,16 +35,18 @@ export const Header = () => ({
             </div>
             <div class="flex w-[76%] justify-between items-center">
               <div
-                class="p-2 w-[300px] flex items-center gap-2 rounded-md bg-[#292929]/80"
+                class="p-2 w-[300px] flex items-center gap-2 rounded-md bg-[#292929]/80 relative"
               >
                 <i
                   class="fa-solid fa-magnifying-glass w-5 h-4 text-gray-300"
                 ></i>
                 <input
+                id="search"
                   type="search"
                   placeholder="Tìm bài hát, đĩa nhạc, nghệ sĩ....."
                   class="w-full outline-none"
                 />
+                <div id="suggestions" class="absolute top-11 w-70 bg-black/90"></div>
               </div>
               <!-- list item -->
               <div class="flex items-center gap-2">
@@ -181,5 +184,129 @@ export const Header = () => ({
       localStorage.removeItem("refresh_token");
       // window.location.href = "/";
     });
+  },
+
+  async getData3() {
+    const input = document.querySelector("#search");
+    const boxSearch = document.querySelector("#suggestions");
+    let timeoutId = null;
+
+    input.addEventListener("input", (e) => {
+      if (timeoutId) clearTimeout(timeoutId);
+
+      timeoutId = setTimeout(async () => {
+        const key = e.target.value.trim();
+
+        if (!key) {
+          boxSearch.innerHTML = "";
+          return;
+        }
+
+        const data = await hintSearch(key);
+        console.log(data);
+
+        const hintText = Array.isArray(data.suggestions)
+          ? data.suggestions
+          : [];
+
+        const hintImg = Array.isArray(data.completed) ? data.completed : [];
+
+        if (!hintText.length && !hintImg.length) {
+          boxSearch.innerHTML = `
+          <div class="p-2 text-sm text-gray-400">
+            Không tìm thấy kết quả phù hợp
+          </div>
+        `;
+          return;
+        }
+
+        boxSearch.innerHTML = `
+        <div class="box p-2">
+          ${
+            hintText.length
+              ? `<h1 class="text-sm font-semibold mb-1">Lời gợi ý</h1>
+                 <div id="hintText" class="flex flex-col mb-2"></div>`
+              : ""
+          }
+
+          ${
+            hintImg.length
+              ? `<h1 class="text-sm font-semibold mb-1">Kết quả</h1>
+                 <div id="hintImg"></div>`
+              : ""
+          }
+        </div>
+      `;
+
+        if (hintText.length) this.renderHint(hintText);
+        if (hintImg.length) this.renderImg(hintImg);
+      }, 500);
+    });
+  },
+
+  renderHint(tasks) {
+    const hintText = document.querySelector("#hintText");
+    const input = document.querySelector("#search");
+    const boxSearch = document.querySelector("#suggestions");
+    hintText.innerHTML = tasks
+      .map(
+        (task) => `
+      <div class="hint px-3 py-1 hover:bg-gray-200 rounded">${task}</div>
+      `
+      )
+      .join("");
+
+    hintText.querySelectorAll(".hint").forEach((hint) => {
+      hint.addEventListener("click", async () => {
+        input.value = hint.textContent.trim();
+        const keyword = hint.textContent.trim();
+
+        // 1. điền input
+        input.value = keyword;
+
+        // 2. gọi search luôn
+        const data = await hintSearch(keyword);
+
+        const hintImg = Array.isArray(data.completed) ? data.completed : [];
+
+        // 3. render kết quả
+        boxSearch.innerHTML = `
+        <div class="box p-2">
+          <h1 class="text-sm font-semibold mb-1">Kết quả</h1>
+          <div id="hintImg"></div>
+        </div>
+      `;
+
+        this.renderImg(hintImg);
+      });
+    });
+  },
+
+  renderImg(imgs) {
+    const hintImg = document.querySelector("#hintImg");
+    hintImg.innerHTML = imgs
+      .map(
+        (img) => `
+        <a href="#"
+     class="flex items-center gap-1 p-1 rounded hover:bg-gray-700 transition"
+  >
+    <img
+      src="${img.thumbnails[0]}"
+      alt="${img.title}"
+      class="w-10 h-10 object-cover rounded"
+    />
+
+    <div class="flex flex-col">
+      <p class="text-sm font-medium text-white line-clamp-1">
+        ${img.title}
+      </p>
+      <span class="text-xs text-gray-400 line-clamp-1">
+        ${img.subtitle}
+      </span>
+    </div>
+  </a>
+      `
+      )
+      .join("");
   },
 });

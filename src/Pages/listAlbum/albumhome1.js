@@ -18,13 +18,8 @@ export const albumList1 = (mood) => ({
     </div>
     `;
   },
-  //   async getData() {
-  //     const data = await listAlbum1(this.slug);
-  //     console.log(data);
-  //   },
   async getData() {
     const data = await listAlbum1(this.slug);
-    console.log(data);
     const totalSeconds = data.tracks.reduce(
       (sum, track) => sum + track.duration,
       0
@@ -92,7 +87,7 @@ export const albumList1 = (mood) => ({
         (task, index) => `
          <a
     href="/songs/details/${task.id}"
-    class="group flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 transition"
+    class=" group flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 transition"
   >
   
     <span class="w-6 text-sm text-white/60 text-center">${index + 1}</span>
@@ -120,7 +115,6 @@ export const albumList1 = (mood) => ({
     </div>
     <span class="text-xs text-white/40">${calculateTime(task.duration)}</span>
   </a>
-  
       `
       )
       .join("");

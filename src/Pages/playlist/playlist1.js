@@ -29,7 +29,6 @@ export const playList1 = (mood) => ({
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     let totalTime = "";
-
     if (hours > 0) {
       totalTime = `${hours} giờ ${minutes} phút`;
     } else {
@@ -80,6 +79,7 @@ export const playList1 = (mood) => ({
       const secs = seconds % 60;
       return `${minutes}:${secs.toString().padStart(2, "0")}`;
     }
+    sessionStorage.setItem("allowAutoPlay", "true");
     pageRight.innerHTML = playList
       .map(
         (task, index) => `

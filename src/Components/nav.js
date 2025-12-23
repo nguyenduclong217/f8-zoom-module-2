@@ -7,7 +7,6 @@ export const Nav = () => ({
     const body = document.querySelector(".side-bar");
     body.innerHTML = this.template();
     router.updatePageLinks();
-    // this.actMenu();
     this.hadData();
   },
   template() {
