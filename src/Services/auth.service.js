@@ -393,3 +393,25 @@ export const hintSearch = async (key) => {
   const data = await response.json();
   return data;
 };
+
+export const pageSearch = async (key, limit, page) => {
+  const response = await fetch(
+    `${config.BASE_URL}/search?q=${encodeURIComponent(
+      key
+    )}&limit=${limit}&page=${page}`
+  );
+  if (!response.ok) {
+    throw new Error("Fetch failed");
+  }
+  const data = await response.json();
+  return data;
+};
+
+export const videoPage1 = async (id) => {
+  const response = await fetch(`${config.BASE_URL}/videos/details/${id}`);
+  if (!response.ok) {
+    throw new Error("Fetch failed");
+  }
+  const data = response.json();
+  return data;
+};

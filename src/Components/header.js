@@ -1,3 +1,4 @@
+import { searchPage } from "../Pages/pageSearch";
 import { router } from "../routerr";
 import { hintSearch, infoUser } from "../Services/auth.service";
 
@@ -12,6 +13,7 @@ export const Header = () => ({
     this.btnMenu();
     this.getData();
     this.getData3();
+    this.handleSearch();
 
     // this.listBtn();
   },
@@ -260,16 +262,11 @@ export const Header = () => ({
       hint.addEventListener("click", async () => {
         input.value = hint.textContent.trim();
         const keyword = hint.textContent.trim();
-
-        // 1. điền input
         input.value = keyword;
 
-        // 2. gọi search luôn
         const data = await hintSearch(keyword);
 
         const hintImg = Array.isArray(data.completed) ? data.completed : [];
-
-        // 3. render kết quả
         boxSearch.innerHTML = `
         <div class="box p-2">
           <h1 class="text-sm font-semibold mb-1">Kết quả</h1>
@@ -308,5 +305,61 @@ export const Header = () => ({
       `
       )
       .join("");
+  },
+
+  // handleSearch() {
+  //   const boxSearch = document.querySelector("#suggestions");
+  //   document.addEventListener("keydown", (e) => {
+  //     if (e.key !== "Enter") return;
+
+  //     const input = document.activeElement;
+  //     if (!input || input.id !== "search") return;
+
+  //     e.preventDefault();
+
+  //     const keyword = input.value.trim();
+  //     if (!keyword) return;
+
+  //     console.log("ENTER SEARCH:", keyword);
+  //     boxSearch.innerHTML = "";
+
+  //     router.navigate(`/search?q=${encodeURIComponent(keyword)}`);
+  //     router.resolve();
+  //   });
+  // },
+  handleSearch() {
+    // const boxSearch = document.querySelector("#suggestions");
+    const inputSearch = document.querySelector("#search");
+    const boxSearch = document.querySelector("#suggestions");
+    if (!inputSearch || !boxSearch) return;
+
+    // Khi focus vào input, hiện gợi ý lại
+    inputSearch.addEventListener("focus", () => {
+      boxSearch.classList.remove("hidden");
+    });
+    document.addEventListener("keydown", async (e) => {
+      if (e.key !== "Enter") return;
+      const input = document.activeElement;
+      if (!input || input.id !== "search") return;
+      e.preventDefault();
+      boxSearch.classList.add("hidden");
+      const keyword = input.value.trim();
+      if (!keyword) return;
+
+      const url = `/search?q=${encodeURIComponent(keyword)}`;
+
+      if (location.pathname === "/search") {
+        history.pushState({}, "", url);
+
+        // ⚡ Render template DOM trước
+        searchPage.init();
+        // ⚡ Sau đó fetch dữ liệu và hiển thị
+        await searchPage.update();
+        return;
+      }
+
+      // từ trang khác → navigate SPA bình thường
+      router.navigate(url);
+    });
   },
 });

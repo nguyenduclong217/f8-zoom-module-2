@@ -16,12 +16,10 @@ import { charts } from "./Pages/KhamphaPage/charts";
 import { moods_and_genres } from "./Pages/KhamphaPage/moods-and-genres";
 import { categoriesList } from "./Pages/listAlbum/categoriesList";
 import { linesList } from "./Pages/listAlbum/linesList";
-// import { albumList2 } from "./Pages/listAlbum/albumhome2";
-// import { playList1 } from "./Pages/playlist/playlist1";
-
-// import { energize } from "./Pages/moods/energize";
-
-// export default function router() {
+// import { pageSearch } from "./Services/auth.service";
+import { search, searchPage } from "./Pages/pageSearch";
+import { videoPage } from "./Pages/playlist/video";
+// import { videoPage } from "./Pages/playlist/video";
 export const router = new Navigo("/");
 
 router.hooks({
@@ -121,6 +119,17 @@ router
     const { slug } = data;
     const categoriesPage = linesList(slug);
     await categoriesPage.init();
+    hideLoading();
+  })
+  .on("/search", async () => {
+    searchPage.init();
+    await searchPage.update();
+    hideLoading();
+  })
+  .on("/videos/details/:id", async ({ data }) => {
+    const { id } = data;
+    const pageVideo = videoPage(id);
+    await pageVideo.init();
     hideLoading();
   });
 

@@ -1,3 +1,4 @@
+import { router } from "../../routerr";
 import {
   categoriesApi,
   linesApi,
@@ -82,7 +83,7 @@ export const moods_and_genres = () => ({
     taskListEl.innerHTML = items
       .map(
         (item) => `
-      <a href="/categories/${item.slug}"
+      <a href="/categories/${item.slug}" data-navigo
          class="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 
                text-white text-sm cursor-pointer w-[230px] text-center">
         ${item.name}
@@ -90,6 +91,7 @@ export const moods_and_genres = () => ({
     `
       )
       .join("");
+    router.updatePageLinks();
   },
   async getData2() {
     const data = await categoriesApi();
@@ -102,7 +104,7 @@ export const moods_and_genres = () => ({
     taskListEl.innerHTML = items
       .map(
         (item) => `
-      <a href="/categories/${item.slug}"
+      <a href="/categories/${item.slug}" data-navigo
          class="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 
                text-white text-sm cursor-pointer w-[230px] text-center">
         ${item.name}
@@ -110,6 +112,7 @@ export const moods_and_genres = () => ({
     `
       )
       .join("");
+    router.updatePageLinks();
   },
   // moods
   async getData3() {
@@ -125,7 +128,7 @@ export const moods_and_genres = () => ({
     el.innerHTML = items
       .map(
         (item) => `
-      <a href="/lines/${item.slug}"
+      <a href="/lines/${item.slug}" data-navigo
          class="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 
                text-white text-sm cursor-pointer w-[230px] text-center">
         ${item.name}
@@ -133,5 +136,6 @@ export const moods_and_genres = () => ({
     `
       )
       .join("");
+    router.updatePageLinks();
   },
 });

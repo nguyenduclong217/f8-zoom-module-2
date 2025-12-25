@@ -1,5 +1,5 @@
 import { list_moods, newAlbums, newVideos } from "../Services/auth.service";
-
+import { router } from "../routerr";
 export const khamPha = () => ({
   init: async function () {
     const container = document.querySelector(".content");
@@ -102,6 +102,7 @@ export const khamPha = () => ({
         `
       )
       .join("");
+    router.updatePageLinks();
   },
   async getData2() {
     const data = await newVideos();
@@ -113,7 +114,7 @@ export const khamPha = () => ({
       .map((task) => {
         const viewK = Math.floor(task.views / 1000);
         return `
-        <a href="/albums/details/${task.slug}" data-navigo class="group hover:bg-white/10 rounded-lg mt-0 transition cursor-pointer flex shrink-0 w-[230px]  ">
+        <a href="/videos/details/${task.id}" data-navigo class="group hover:bg-white/10 rounded-lg mt-0 transition cursor-pointer flex shrink-0 w-[230px]  ">
         <div class="p-1">
         <div class="relative overflow-hidden rounded-[12px] w-[220px] h-[220px]">
         <img src="${task.thumb}" alt="img" class=" w-full h-full object-cover">
@@ -132,6 +133,7 @@ export const khamPha = () => ({
         `;
       })
       .join("");
+    router.updatePageLinks();
   },
   // moods
   async getData3() {
@@ -172,6 +174,7 @@ export const khamPha = () => ({
       .join("")}
     </div>
     `;
+    router.updatePageLinks();
     this.bindEvents();
   },
   renderItem(item) {

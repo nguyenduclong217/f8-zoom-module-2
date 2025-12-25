@@ -19,11 +19,16 @@ export const musicPlay1 = (id) => ({
   },
   async loadQuickPicks() {
     const data = await listAlbumPlay(this.id);
-    const videos = data.album.tracks;
-    this.renderTask(videos);
+    console.log(data);
+    const tracks = data.album?.tracks || [];
+    const related = data.related || [];
+
+    // Nối hai mảng
+    const items = [...tracks, ...related];
+    this.renderTask(items);
     const allowAutoPlay = sessionStorage.getItem("allowAutoPlay");
-    if (videos.length > 0 && allowAutoPlay) {
-      const firstSong = videos[0];
+    if (items.length > 0 && allowAutoPlay) {
+      const firstSong = items[0];
       const firstEl = document.querySelector(".song-item");
       firstEl?.classList.add("active");
       const index = 0;
@@ -36,13 +41,13 @@ export const musicPlay1 = (id) => ({
             songId: firstSong.id,
             autoPlay: true,
             index,
-            playlist: videos,
+            playlist: items,
           },
         })
       );
     }
 
-    const totalSeconds = videos.reduce((sum, track) => sum + track.duration, 0);
+    const totalSeconds = items.reduce((sum, track) => sum + track.duration, 0);
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     let totalTime = "";

@@ -1,5 +1,4 @@
-// import { listQuick, musicVnApi, playlists } from "../../Services/auth.service";
-
+import { router } from "../../routerr";
 import {
   linesAlbum,
   linesSongs,
@@ -24,7 +23,7 @@ export const linesList = (mood) => ({
   template() {
     return `
     <div class="relative ml-35 w-[87%] mt-12">
-    
+
     <section  class="quick-pic mt-20">
     <div class="flex items-center justify-between">
      <h2 class="title-1 text-[2rem] text-white font-bold mb-4">Bài hát</h2>
@@ -57,7 +56,7 @@ export const linesList = (mood) => ({
      </div>
      <div class="linesAlbum flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth p-4"></div>
      </section>
-     
+
     <section  class="quick-pic mt-20">
     <div class="flex items-center justify-between">
      <h2 class="title-1 text-[2rem] text-white font-bold mb-4">Danh sách phát nổi bật</h2>
@@ -101,6 +100,7 @@ export const linesList = (mood) => ({
   async getData() {
     const data = await linesSongs(this.slug);
     const listItem = data.items;
+    console.log(listItem);
     if (!listItem) return;
     this.renderTask(listItem);
   },
@@ -108,7 +108,7 @@ export const linesList = (mood) => ({
     const taskList = document.querySelector(".listSongs");
     taskList.innerHTML = tasks
       .map(
-        (task) => `<a href="/songs/details/${task.id}"
+        (task) => `<a href="/songs/details/${task.id}" data-navigo
   class="group w-[230px] h-[56px]
          flex items-center gap-3
          px-2 rounded-md
@@ -154,6 +154,7 @@ export const linesList = (mood) => ({
         `
       )
       .join("");
+    router.updatePageLinks();
   },
 
   async getData2() {
@@ -188,6 +189,7 @@ export const linesList = (mood) => ({
       `
       )
       .join("");
+    router.updatePageLinks();
   },
   async getData3() {
     const data = await linesVideo(this.slug);
@@ -220,6 +222,7 @@ export const linesList = (mood) => ({
       `
       )
       .join("");
+    router.updatePageLinks();
   },
   async getData4() {
     const data = await reminderAlbumApi();
@@ -239,18 +242,19 @@ export const linesList = (mood) => ({
         <div class="overlay absolute inset-0 flex bg-black/50 justify-center opacity-0 group-hover:opacity-100 transition">
         <span class="play text-[1.3rem] text-white/60 flex items-center"><i class="fa-regular fa-circle-play"></i></span>
       </div>
-  
+
         </div>
-  
+
         <div class="mt-2">
         <h3 class="text-sm text-white font-semibold">${task.title}</h3>
         <p class="text-sm text-white/40">${task.artists} </p>
         </div>
         </div>
         </a>
-      
+
       `
       )
       .join("");
+    router.updatePageLinks();
   },
 });

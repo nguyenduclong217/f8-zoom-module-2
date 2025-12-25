@@ -1,6 +1,8 @@
 // import { listQuick, musicVnApi, playlists } from "../../Services/auth.service";
 
+import { router } from "../../routerr";
 import { listCategoriesApi } from "../../Services/auth.service";
+// import { router } from "../../routerr";
 
 export const categoriesList = (mood) => ({
   init: async function () {
@@ -32,13 +34,15 @@ export const categoriesList = (mood) => ({
   async getData() {
     const data = await listCategoriesApi(this.slug);
     const listItem = data.subcategories;
+    // console.log(lis);
     if (!listItem) return;
     this.renderTask(listItem);
   },
   renderTask(tasks) {
     const taskList = document.querySelector("#body");
-    taskList.innerHTML = tasks.map(
-      (task) => `
+    taskList.innerHTML = tasks
+      .map(
+        (task) => `
       <section class="quick-pic mt-20">
      <div class="flex items-center justify-between">
      <h2 class="title-1 text-[2rem] text-white font-bold mb-4">${task.name}</h2>
@@ -54,7 +58,7 @@ export const categoriesList = (mood) => ({
      <div class="balladAcoustic flex gap-3">
      ${task.playlists.map(
        (el) => `
-        <div class="group w-[220px] rounded-xl overflow-hidden bg-white/5 hover:bg-white/10 transition">
+        <a href="/playlists/details/${el.slug}" data-navigo class="group w-[220px] rounded-xl overflow-hidden bg-white/5 hover:bg-white/10 transition">
   
   <!-- IMAGE -->
   <div class="relative w-full h-[140px] overflow-hidden">
@@ -90,7 +94,7 @@ export const categoriesList = (mood) => ({
     </span>
   </div>
 
-</div>
+</a>
 `
      )}
 </div>
@@ -99,6 +103,8 @@ export const categoriesList = (mood) => ({
          
 
         `
-    );
+      )
+      .join("");
+    router.updatePageLinks();
   },
 });

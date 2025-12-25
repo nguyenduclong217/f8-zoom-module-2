@@ -1,3 +1,4 @@
+import { router } from "../../routerr";
 import { listAlbum1 } from "../../Services/auth.service";
 
 export const albumList1 = (mood) => ({
@@ -86,7 +87,7 @@ export const albumList1 = (mood) => ({
       .map(
         (task, index) => `
          <a
-    href="/songs/details/${task.id}"
+    href="/songs/details/${task.id}" data-navigo
     class=" group flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 transition"
   >
   
@@ -118,5 +119,6 @@ export const albumList1 = (mood) => ({
       `
       )
       .join("");
+    router.updatePageLinks();
   },
 });

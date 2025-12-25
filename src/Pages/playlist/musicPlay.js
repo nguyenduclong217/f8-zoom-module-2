@@ -2,8 +2,11 @@ import { musicPlay1 } from "./musicPlay1";
 
 export const playMusic = () => ({
   init() {
-    const container = document.querySelector("footer");
-    container.innerHTML = this.template();
+    const container = document.querySelector("#playBar");
+    if (!container.innerHTML) {
+      container.innerHTML = this.template();
+    }
+    this.audio = document.querySelector("#audio");
     this.play();
   },
 
@@ -89,14 +92,13 @@ export const playMusic = () => ({
       </div>
 
     </div></div>
-    <audio id="audio" src=""></audio>
     `;
   },
 
   play() {
     let playlist = [];
     let currentIndex = -1;
-    const audio = document.querySelector("audio");
+    const audio = this.audio;
     const imgEl = document.querySelector("#songImg");
     const titleEl = document.querySelector("#songTitle");
     const btnAct = document.querySelector("#playBtn");

@@ -1,3 +1,4 @@
+import { router } from "../../routerr";
 import { listItemsQuick } from "../../Services/auth.service";
 
 export const playList1 = (mood) => ({
@@ -29,6 +30,7 @@ export const playList1 = (mood) => ({
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     let totalTime = "";
+
     if (hours > 0) {
       totalTime = `${hours} giờ ${minutes} phút`;
     } else {
@@ -84,7 +86,7 @@ export const playList1 = (mood) => ({
       .map(
         (task, index) => `
        <a
-  href="/songs/details/${task.id}"
+  href="/songs/details/${task.id}" data-navigo
   class="group flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 transition"
 >
 
@@ -120,5 +122,6 @@ export const playList1 = (mood) => ({
     `
       )
       .join("");
+    router.updatePageLinks();
   },
 });

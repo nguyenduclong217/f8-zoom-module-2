@@ -1,5 +1,6 @@
+import { router } from "../../routerr";
 import { newReleases, newVideos } from "../../Services/auth.service";
-
+// import { router } from "../routerr";
 export const new_releases = () => ({
   init: async function () {
     const container = document.querySelector(".content");
@@ -75,6 +76,7 @@ export const new_releases = () => ({
         `
       )
       .join("");
+    router.updatePageLinks();
   },
   async getData2() {
     const data = await newVideos();
@@ -105,6 +107,7 @@ export const new_releases = () => ({
         `;
       })
       .join("");
+    router.updatePageLinks();
   },
   // moods
 });

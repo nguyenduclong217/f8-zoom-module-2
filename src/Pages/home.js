@@ -141,6 +141,7 @@ export const Home = () => ({
    `
       )
       .join("");
+    router.updatePageLinks();
   },
 
   // Album gợi ý cho bạn
@@ -175,6 +176,7 @@ export const Home = () => ({
     `
       )
       .join("");
+    router.updatePageLinks();
   },
   // Today's Hits
   async getData3() {
@@ -207,6 +209,7 @@ export const Home = () => ({
       `
       )
       .join("");
+    router.updatePageLinks();
   },
 
   // musicVn
@@ -240,6 +243,7 @@ export const Home = () => ({
       `
       )
       .join("");
+    router.updatePageLinks();
   },
   async getData5() {
     const data = await musicVnApi();
