@@ -1,3 +1,4 @@
+import { router } from "../../routerr";
 import { topSinger, topVideo } from "../../Services/auth.service";
 
 export const charts = () => ({
@@ -122,7 +123,7 @@ export const charts = () => ({
     postListEl.innerHTML = tasks
       .map(
         (task) => `
-       <div class="group flex flex-col gap-2 p-2 rounded-lg hover:bg-white/10 transition cursor-pointer w-60">
+       <a href="/videos/details/${task._id}" data-navigo class="group flex flex-col gap-2 p-2 rounded-lg hover:bg-white/10 transition cursor-pointer w-60">
   
   <!-- Thumbnail -->
   <div class="relative w-full h-40 overflow-hidden rounded-lg">
@@ -149,9 +150,10 @@ export const charts = () => ({
     </span>
   </div>
 
-</div>`
+</a>`
       )
       .join("");
+    router.updatePageLinks();
   },
   async getData2() {
     const data = await topSinger(this.region);

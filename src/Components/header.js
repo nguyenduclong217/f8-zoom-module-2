@@ -284,7 +284,7 @@ export const Header = () => ({
     hintImg.innerHTML = imgs
       .map(
         (img) => `
-        <a href="#"
+        <a href="/songs/details/${img.id}" data-navigo
      class="flex items-center gap-1 p-1 rounded hover:bg-gray-700 transition"
   >
     <img
@@ -305,6 +305,7 @@ export const Header = () => ({
       `
       )
       .join("");
+    router.updatePageLinks();
   },
 
   // handleSearch() {
@@ -351,14 +352,10 @@ export const Header = () => ({
       if (location.pathname === "/search") {
         history.pushState({}, "", url);
 
-        // ⚡ Render template DOM trước
         searchPage.init();
-        // ⚡ Sau đó fetch dữ liệu và hiển thị
         await searchPage.update();
         return;
       }
-
-      // từ trang khác → navigate SPA bình thường
       router.navigate(url);
     });
   },

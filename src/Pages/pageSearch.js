@@ -16,8 +16,6 @@ export const search = () => ({
   },
 
   async update() {
-    this.init();
-
     const params = new URLSearchParams(window.location.search);
     this._query.pageNow = parseInt(params.get("page")) || 1;
     const keyword = params.get("q");

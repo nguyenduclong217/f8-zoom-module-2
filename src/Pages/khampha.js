@@ -201,12 +201,12 @@ export const khamPha = () => ({
   `;
   },
   bindEvents() {
-    document.querySelector(".list-moods").addEventListener("click", (e) => {
-      const item = e.target.closest("[data-id]");
-      if (!item) return;
+    // document.querySelector(".list-moods").addEventListener("click", (e) => {
+    //   const item = e.target.closest("[data-id]");
+    //   if (!item) return;
 
-      const id = item.dataset.id;
-      const type = item.dataset.type;
-    });
+    //   const id = item.dataset.id;
+    //   const type = item.dataset.type;
+    // });
   },
 });

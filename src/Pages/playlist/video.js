@@ -1,7 +1,19 @@
 import { router } from "../../routerr";
 import { videoPage1 } from "../../Services/auth.service";
-import { loadYoutubeApi } from "./youtubeApi/loadYoutubeApi";
-import { createPlayer, loadVideo3 } from "./youtubeApi/youtubePlayer";
+import { nextSong, prevSong } from "./youtubeApi/playlistController";
+import {
+  createPlayer,
+  getCurrentState,
+  getCurrentTime,
+  getDuration,
+  isMute,
+  loadVideo3,
+  pause,
+  play,
+  seekTo,
+  timeUpdate,
+  toggleMute,
+} from "./youtubeApi/youtubePlayer";
 export const videoPage = (id) => ({
   async init() {
     const container = document.querySelector(".content");
@@ -18,34 +30,19 @@ export const videoPage = (id) => ({
     </div></div>
     <div id="page-right" class="w-[35%]"></div>
     </div>
-    
     `;
   },
 
   async loadQuickPicks() {
     const data = await videoPage1(this.id);
-    console.log(data);
-    const totalSeconds = data.related.reduce(
-      (sum, track) => sum + track.duration,
-      0
-    );
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    let totalTime = "";
-
-    if (hours > 0) {
-      totalTime = `${hours} giờ ${minutes} phút`;
-    } else {
-      totalTime = `${minutes} phút`;
-    }
 
     const pageLeft = document.querySelector("#page-left");
     pageLeft.innerHTML = `
       <div id="video-container"></div>
-      <div class="mt-6 w-[100%]">
+      <div class="mt-4 w-[100%]">
       <div>
-      <h1>${data.title}</h1>
-      <p>Không rõ</p>
+      <h1 class="text-center text-white font-semibold text-[1.7rem]">${data.title}</h1>
+      <p class="text-center text-white font-semibold" >Không rõ</p>
       </div>
 
       <div class="w-[100%]">
@@ -83,6 +80,7 @@ export const videoPage = (id) => ({
         <i class="fa-solid fa-pause text-3xl"></i>    
         </button >
         <button id ="next-right" class="w-10 h-10 hover:bg-white/20 rounded-full"><i class="fa-solid fa-forward-step"></i></button>          
+        <div>
          <button id="volume" class="w-10 h-10 hover:bg-white/20 rounded-full"><i class="fa-solid fa-volume-high"></i></button>
         <button id="loop" class="w-10 h-10 hover:bg-white/20 rounded-full"><i class="fa-solid fa-repeat"></i></button>
       </div>
@@ -95,11 +93,10 @@ export const videoPage = (id) => ({
     </div>
     <div class ="w-full p-2">
     <div class="flex items-center h-12 px-4 w-full justify-between">
-      <div>
+      <div class="flex justify-between w-[100%] mb-7">
       <span id="current-time">0:00</span>
        <span id="duration">0:00</span>
       </div>
-
       </div>
     </div>
       `;
@@ -108,7 +105,122 @@ export const videoPage = (id) => ({
     if (window.YT && window.YT.Player) {
       createPlayer("video-container", data.videoId);
     }
+
+    document.addEventListener("player-ready", () => {
+      startProgress();
+      setupPlayBtn();
+      setupNextBtn();
+      setupVolumeBtn();
+    });
+
+    function setupPlayBtn() {
+      const playBtn = document.querySelector("#playBtn");
+      playBtn.addEventListener("click", () => {
+        const states = getCurrentState();
+        if (states === YT.PlayerState.PLAYING) {
+          pause();
+          playBtn.innerHTML = `<i class="fa-solid fa-play text-[20px]"></i>`;
+        } else {
+          play();
+          playBtn.innerHTML = `<i class="fa-solid fa-pause text-3xl"></i>`;
+        }
+      });
+    }
+
+    function setupVolumeBtn() {
+      const btnVolume = document.querySelector("#volume");
+      btnVolume.addEventListener("click", () => {
+        toggleMute();
+        if (isMute()) {
+          btnVolume.innerHTML = `<i class="fa-solid fa-volume-xmark"></i>`;
+        } else {
+          btnVolume.innerHTML = `<i class="fa-solid fa-volume-high"></i>`;
+        }
+      });
+    }
+
+    function startProgress() {
+      const currentTime = document.querySelector("#current-time");
+      const durationTime = document.querySelector("#duration");
+      const progressFill = document.querySelector("#progressFill");
+      const progressBar = document.getElementById("progressBar");
+
+      let isDragging = false;
+
+      const getPercent = (e) => {
+        const rect = progressBar.getBoundingClientRect();
+        let x = e.clientX - rect.left;
+        x = Math.max(0, Math.min(x, rect.width));
+        return x / rect.width;
+      };
+
+      function updateProgress() {
+        if (!isDragging) {
+          const current = getCurrentTime();
+          const duration = getDuration();
+          const percent = duration ? (current / duration) * 100 : 0;
+          progressFill.style.width = percent + "%";
+          currentTime.textContent = formatTime(current);
+          durationTime.textContent = formatTime(duration);
+        }
+        requestAnimationFrame(updateProgress);
+      }
+      updateProgress();
+
+      progressBar.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        pause();
+        const percent = getPercent(e);
+        const time = percent * getDuration();
+        progressFill.style.width = percent * 100 + "%";
+        currentTime.textContent = formatTime(time);
+      });
+
+      document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        const percent = getPercent(e);
+        const time = percent * getDuration();
+        progressFill.style.width = percent * 100 + "%";
+        currentTime.textContent = formatTime(time);
+      });
+
+      document.addEventListener("mouseup", (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        const percent = getPercent(e);
+        const time = percent * getDuration();
+        seekTo(time);
+        play();
+        progressFill.style.width = percent * 100 + "%";
+        currentTime.textContent = formatTime(time);
+      });
+    }
+
+    function setupNextBtn() {
+      const nextBtn = document.querySelector("#next-right");
+      nextBtn.addEventListener("click", () => {
+        nextSong();
+      });
+
+      const prevBtn = document.querySelector("#next-left");
+      prevBtn.addEventListener("click", () => {
+        prevSong();
+      });
+    }
     this.renderTask(data);
+
+    function formatTime(seconds) {
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = Math.floor(seconds % 60);
+      if (h > 0) {
+        return `${h}:${m.toString().padStart(2, "0")}:${s
+          .toString()
+          .padStart(2, "0")}`;
+      }
+
+      return `${m}:${s.toString().padStart(2, "0")}`;
+    }
   },
   playVideo(videoId) {
     loadVideo3(videoId);
@@ -129,7 +241,7 @@ export const videoPage = (id) => ({
       .map(
         (task, index) => `
          <div data-navigo 
-    data-video-id="${task.videoId}"
+    data-video-id="${task.videoId}" data-index="${index}"
     class="group flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 transition"
   >
   
@@ -166,6 +278,15 @@ export const videoPage = (id) => ({
       )
       .join("");
     router.updatePageLinks();
+    // pageRight.addEventListener("click", (e) => {
+    //   const item = e.target.closest("[data-video-id]");
+    //   if (!item) return;
+
+    //   e.preventDefault();
+
+    //   const videoId = item.dataset.videoId;
+    //   this.playVideo(videoId);
+    // });
     pageRight.addEventListener("click", (e) => {
       const item = e.target.closest("[data-video-id]");
       if (!item) return;
@@ -174,9 +295,10 @@ export const videoPage = (id) => ({
 
       const videoId = item.dataset.videoId;
       this.playVideo(videoId);
+      document.querySelectorAll("#page-right [data-index]").forEach((el) => {
+        el.classList.remove("bg-white/10");
+      });
+      item.classList.add("bg-white/10");
     });
   },
-  // playVideo(){
-
-  // }
 });
