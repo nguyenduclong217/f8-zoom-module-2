@@ -147,7 +147,6 @@ export const Home = () => ({
   // Album gợi ý cho bạn
   async getData2() {
     const data = await reminderAlbumApi();
-    console.log(data);
     this.renderTask2(data);
   },
   renderTask2(tasks) {

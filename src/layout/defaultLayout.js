@@ -12,7 +12,7 @@ export default function defaultLayout() {
  </div>
  </main>
  <div id="global-loading" class ="hidden fixed inset-0 z-[9999] bg-black/60 flex items-center justify-center">
- <div class ="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin   "></div>
+ <div class ="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin "></div>
  </div>
 
  <footer class="relative">

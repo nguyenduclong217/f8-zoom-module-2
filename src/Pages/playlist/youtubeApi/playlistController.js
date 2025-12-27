@@ -12,6 +12,7 @@ export function nextSong() {
   if (!playList || !playList.length) return;
 
   playerStore.currentIndex++;
+  console.log(playList.length);
   if (playerStore.currentIndex >= playList.length) {
     playerStore.currentIndex = 0; // quay về đầu
   }
@@ -23,7 +24,6 @@ export function nextSong() {
 export function prevSong() {
   const { playList } = playerStore;
   if (!playList || !playList.length) return;
-
   playerStore.currentIndex--;
   if (playerStore.currentIndex < 0) {
     playerStore.currentIndex = playList.length - 1; // quay về cuối

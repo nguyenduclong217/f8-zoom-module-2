@@ -10,7 +10,6 @@ export const search = () => ({
   init() {
     const container = document.querySelector(".content");
     if (!container) return;
-
     container.innerHTML = this.template();
     this.paginate();
   },
@@ -21,8 +20,6 @@ export const search = () => ({
     const keyword = params.get("q");
     const limit = this._query.limit;
     const page = (this._query.pageNow - 1) * limit;
-    // const page = (pageNow - 1) * limit;
-    // const page = 1;
     if (!keyword) return;
 
     const data = await pageSearch(keyword, limit, page);

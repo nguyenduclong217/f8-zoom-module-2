@@ -1,5 +1,6 @@
 import { router } from "../../routerr";
 import { videoPage1 } from "../../Services/auth.service";
+import { playerStore } from "./youtubeApi/playerStore";
 import { nextSong, prevSong } from "./youtubeApi/playlistController";
 import {
   createPlayer,
@@ -35,13 +36,18 @@ export const videoPage = (id) => ({
 
   async loadQuickPicks() {
     const data = await videoPage1(this.id);
+    const playList = data.related;
+    const playListVideos = [data, ...playList];
+    playerStore.playList = playListVideos;
+    console.log(playerStore);
+    console.log(playListVideos);
 
     const pageLeft = document.querySelector("#page-left");
     pageLeft.innerHTML = `
       <div id="video-container"></div>
       <div class="mt-4 w-[100%]">
       <div>
-      <h1 class="text-center text-white font-semibold text-[1.7rem]">${data.title}</h1>
+      <h1 id="title" class="text-center text-white font-semibold text-[1.7rem]"></h1>
       <p class="text-center text-white font-semibold" >Không rõ</p>
       </div>
 
@@ -100,10 +106,14 @@ export const videoPage = (id) => ({
       </div>
     </div>
       `;
+    this.updateVideoInfo();
     //Page-right
 
     if (window.YT && window.YT.Player) {
-      createPlayer("video-container", data.videoId);
+      createPlayer(
+        "video-container",
+        playListVideos[playerStore.currentIndex].videoId
+      );
     }
 
     document.addEventListener("player-ready", () => {
@@ -195,19 +205,24 @@ export const videoPage = (id) => ({
         currentTime.textContent = formatTime(time);
       });
     }
-
+    const song = videoPage(id);
     function setupNextBtn() {
       const nextBtn = document.querySelector("#next-right");
       nextBtn.addEventListener("click", () => {
+        console.log("1");
         nextSong();
+        song.updateActiveSong();
+        song.updateVideoInfo();
       });
 
       const prevBtn = document.querySelector("#next-left");
       prevBtn.addEventListener("click", () => {
         prevSong();
+        song.updateActiveSong();
+        song.updateVideoInfo();
       });
     }
-    this.renderTask(data);
+    this.renderTask(playListVideos);
 
     function formatTime(seconds) {
       const h = Math.floor(seconds / 3600);
@@ -229,15 +244,14 @@ export const videoPage = (id) => ({
   renderTask(tasks) {
     const pageRight = document.querySelector("#page-right");
     if (!pageRight) return;
-    const playList = tasks.related;
-    console.log(playList);
+
     function calculateTime(seconds) {
       const minutes = Math.floor(seconds / 60);
       const secs = seconds % 60;
       return `${minutes}:${secs.toString().padStart(2, "0")}`;
     }
     sessionStorage.setItem("allowAutoPlay", "true");
-    pageRight.innerHTML = playList
+    pageRight.innerHTML = tasks
       .map(
         (task, index) => `
          <div data-navigo 
@@ -278,15 +292,7 @@ export const videoPage = (id) => ({
       )
       .join("");
     router.updatePageLinks();
-    // pageRight.addEventListener("click", (e) => {
-    //   const item = e.target.closest("[data-video-id]");
-    //   if (!item) return;
-
-    //   e.preventDefault();
-
-    //   const videoId = item.dataset.videoId;
-    //   this.playVideo(videoId);
-    // });
+    this.updateActiveSong();
     pageRight.addEventListener("click", (e) => {
       const item = e.target.closest("[data-video-id]");
       if (!item) return;
@@ -300,5 +306,23 @@ export const videoPage = (id) => ({
       });
       item.classList.add("bg-white/10");
     });
+  },
+  updateActiveSong() {
+    const items = document.querySelectorAll(".group");
+
+    items.forEach((el) => {
+      const index = Number(el.dataset.index);
+
+      if (index === playerStore.currentIndex) {
+        el.classList.add("bg-white/10");
+      } else {
+        el.classList.remove("bg-white/10");
+      }
+    });
+  },
+  updateVideoInfo() {
+    const titleEl = document.querySelector("#title");
+    if (!titleEl) return;
+    titleEl.textContent = playerStore.playList[playerStore.currentIndex].title;
   },
 });
