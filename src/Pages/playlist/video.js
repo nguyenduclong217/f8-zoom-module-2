@@ -12,7 +12,6 @@ import {
   pause,
   play,
   seekTo,
-  timeUpdate,
   toggleMute,
 } from "./youtubeApi/youtubePlayer";
 export const videoPage = (id) => ({
@@ -106,20 +105,14 @@ export const videoPage = (id) => ({
     </div>
       `;
     this.updateVideoInfo();
-    //Page-right
-    // if (window.YT && window.YT.Player) {
-    //   createPlayer(
-    //     "video-container",
-    //     playListVideos[playerStore.currentIndex].videoId
-    //   );
-    // }
-
     document.addEventListener("player-ready", () => {
       startProgress();
       setupPlayBtn();
       setupNextBtn();
       setupVolumeBtn();
     });
+    const container = document.querySelector("#video-container");
+    container.innerHTML = "";
 
     function setupPlayBtn() {
       const playBtn = document.querySelector("#playBtn");
@@ -203,31 +196,38 @@ export const videoPage = (id) => ({
         currentTime.textContent = formatTime(time);
       });
     }
-    const song = videoPage(id);
+    // const song = videoPage(id);
     function setupNextBtn() {
       const nextBtn = document.querySelector("#next-right");
       nextBtn.addEventListener("click", () => {
-        console.log("1");
         nextSong();
-        song.updateActiveSong();
-        song.updateVideoInfo();
+        this.updateActiveSong();
+        this.updateVideoInfo();
       });
 
       const prevBtn = document.querySelector("#next-left");
       prevBtn.addEventListener("click", () => {
         prevSong();
-        song.updateActiveSong();
-        song.updateVideoInfo();
+        this.updateActiveSong();
+        this.updateVideoInfo();
       });
     }
     // Xac nhan co du lieu hay khong
-    const video = playListVideos[playerStore.currentIndex];
     this.renderTask(playListVideos);
-    if (video.videoId && window.YT && window.YT.Player) {
-      createPlayer("video-container", video.videoId);
-    } else {
+    const video = playListVideos[playerStore.currentIndex];
+    const videoId = video?.videoId;
+
+    const isValidYoutubeId = (id) =>
+      typeof id === "string" &&
+      id.trim() !== "" &&
+      /^[a-zA-Z0-9_-]{11}$/.test(id);
+
+    if (!isValidYoutubeId(videoId)) {
       this.renderEmptyPlayer();
+      return;
     }
+
+    createPlayer("video-container", videoId);
 
     function formatTime(seconds) {
       const h = Math.floor(seconds / 3600);
@@ -340,7 +340,7 @@ export const videoPage = (id) => ({
   renderEmptyPlayer() {
     const container = document.querySelector("#video-container");
     if (!container) return;
-
+    console.log("1");
     container.innerHTML = `
     <div class="w-full h-[360px] flex items-center justify-center text-white/60 bg-black/30 rounded-xl">
       <p>Bài hát này không có video 🎵</p>

@@ -1,4 +1,9 @@
-import { listQuick, musicVnApi, playlists } from "../../Services/auth.service";
+import { router } from "../../routerr";
+import {
+  listQuick,
+  musicVnApi,
+  todayHitApi,
+} from "../../Services/auth.service";
 
 export const MoodPage = (mood) => ({
   init: async function () {
@@ -10,9 +15,7 @@ export const MoodPage = (mood) => ({
     container.innerHTML = this.template();
     this.getData();
     this.getData2();
-    // this.getData3();
-
-    await this.loadQuickPicks();
+    this.getData3();
   },
 
   template() {
@@ -48,7 +51,7 @@ export const MoodPage = (mood) => ({
     </div>
     </div>
      </div>
-     <div class="Featured"></div>
+     <div class="Featured flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth p-4"></div>
     </section>
 
       <section class="quick-pic mt-20">
@@ -79,18 +82,32 @@ export const MoodPage = (mood) => ({
     if (!taskListEl) return;
     taskListEl.innerHTML = tasks
       .map(
-        (task) =>
+        (task, index) =>
           `
-        <a href="/moods/${task.slug}" data-navigo class="flex justify-center items-center px-3 py-2 rounded-lg text-sm cursor-pointer bg-white/10 hover:bg-white/20 text-white" > ${task.name}</a>
+        <a href="/moods/${
+          task.slug
+        }" data-index="${index}"  data-navigo class="flex ${
+            task.slug === this.slug ? "bg-white/50" : ""
+          } justify-center items-center px-3 py-2 rounded-lg text-sm cursor-pointer bg-white/10 hover:bg-white/20 text-white" > ${
+            task.name
+          }</a>
       `
       )
       .join("");
+    router.updatePageLinks();
     if (!infoList) return;
+
+    console.log(tasks);
     // LÀM SAU chưa ACTIVE
-    infoList.innerHTML = `
-    <h1 class="text-white text-[2.5rem] font-semibold">${this.mood}</h1>
-    <p class="text-white mt-5">Curated playlists for Năng Lượng</p>
-    `;
+    const currentTask = tasks.find((task) => task.slug === this.slug);
+    if (currentTask) {
+      infoList.innerHTML = `
+    <h1 class="text-white text-[2.5rem] font-semibold">
+      ${currentTask.name}
+    </h1>
+    <p class="text-white mt-5">Curated playlists for ${currentTask.name}</p>
+  `;
+    }
   },
 
   async getData2() {
@@ -129,10 +146,38 @@ export const MoodPage = (mood) => ({
      `
       )
       .join("");
+    router.updatePageLinks();
   },
+  async getData3() {
+    const data = await todayHitApi();
+    this.renderTask3(data);
+  },
+  renderTask3(tasks) {
+    const taskListEl = document.querySelector(".Featured");
+    if (!taskListEl) return;
+    taskListEl.innerHTML = tasks
+      .map(
+        (task) =>
+          `<a href="playlists/details/${task.slug}" data-navigo class="group hover:bg-white/10 rounded-lg mt-0 transition cursor-pointer flex shrink-0 w-[230px]  ">
+      <div class="p-1">
+      <div class="relative overflow-hidden rounded-[12px] w-[220px] h-[220px]">
+      <img src="${task.thumbnails}" alt="img" class=" w-full h-full object-cover">
+      <div class="overlay absolute inset-0 flex bg-black/50 justify-center opacity-0 group-hover:opacity-100 transition">
+      <span class="play text-[1.3rem] text-white/60 flex items-center"><i class="fa-regular fa-circle-play"></i></span>
+    </div>
 
-  async loadQuickPicks() {
-    const data = await listQuick({ mood: this.mood });
-    // console.log("Quick picks:", data);
+      </div>
+
+      <div class="mt-2">
+      <h3 class="text-sm text-white font-semibold">${task.title}</h3>
+      <p class="text-sm text-white/40">${task.artists} </p>
+      </div>
+      </div>
+      </a>
+      
+      `
+      )
+      .join("");
+    router.updatePageLinks();
   },
 });

@@ -123,7 +123,6 @@ router
   })
   .on("/search", async () => {
     searchPage.init();
-    // await searchPage.update();
     hideLoading();
   })
   .on("/videos/details/:id", async ({ data }) => {
@@ -132,7 +131,6 @@ router
     await pageVideo.init();
     hideLoading();
   });
-
 export function startRouter() {
   router.updatePageLinks();
   router.resolve();
