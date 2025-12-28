@@ -122,7 +122,9 @@ export const MoodPage = (mood) => ({
     postListEl.innerHTML = tasks
       .map(
         (task) => `
-        <a href="#" data-navigo class="group w-[30%] hover:bg-white/10 rounded-lg mt-0 transition cursor-pointer flex shrink-0">
+        <a href="playlists/details/${
+          task.slug
+        }" data-navigo class="group w-[30%] hover:bg-white/10 rounded-lg mt-0 transition cursor-pointer flex shrink-0">
         <div class="p-2 flex items-center gap-3">
         <div class="relative overflow-hidden">
         <img src="${
