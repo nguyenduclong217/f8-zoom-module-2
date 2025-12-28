@@ -1,14 +1,8 @@
 import { router } from "../../routerr";
-import {
-  categoriesApi,
-  linesApi,
-  newReleases,
-  newVideos,
-} from "../../Services/auth.service";
+import { categoriesApi, linesApi } from "../../Services/auth.service";
 
 export const moods_and_genres = () => ({
   init: async function () {
-    this.active();
     const container = document.querySelector(".content");
     container.innerHTML = this.template();
     await Promise.all([this.getData(), this.getData2(), this.getData3()]);
