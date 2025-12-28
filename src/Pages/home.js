@@ -9,6 +9,7 @@ import {
 
 export const Home = () => ({
   init: async function () {
+    window.scrollTo({ top: 0 });
     const container = document.querySelector(".content");
     container.innerHTML = this.template();
     await Promise.all([
@@ -260,6 +261,7 @@ export const Home = () => ({
       )
       .join("");
     router.updatePageLinks();
+    this.active();
   },
 
   async getData6() {
@@ -274,5 +276,18 @@ export const Home = () => ({
 
     const name = data.name;
     nameUser.textContent = `👋 Chào mừng ${name}`;
+  },
+  active() {
+    document.addEventListener("click", (e) => {
+      console.log("1");
+      const link = e.target.closest("a[data-navigo]");
+      if (!link) return;
+
+      window.scroll({
+        top: 0,
+        behavior: "smooth",
+      });
+    });
+    true;
   },
 });

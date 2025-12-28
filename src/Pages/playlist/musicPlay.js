@@ -1,7 +1,8 @@
-import { musicPlay1 } from "./musicPlay1";
+// import { musicPlay1 } from "./musicPlay1";
 
 export const playMusic = () => ({
   init() {
+    window.scrollTo({ top: 0 });
     const container = document.querySelector("#playBar");
     if (!container.innerHTML) {
       container.innerHTML = this.template();

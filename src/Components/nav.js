@@ -8,6 +8,7 @@ export const Nav = () => ({
     body.innerHTML = this.template();
     router.updatePageLinks();
     this.hadData();
+    this.active();
   },
   template() {
     return `
@@ -57,5 +58,17 @@ export const Nav = () => ({
       `;
     }
     router.updatePageLinks();
+  },
+
+  active() {
+    const btnActive = document.querySelectorAll("a");
+    btnActive.forEach((el) =>
+      el.addEventListener("click", () => {
+        window.scroll({
+          top: 0,
+          behavior: "smooth",
+        });
+      })
+    );
   },
 });

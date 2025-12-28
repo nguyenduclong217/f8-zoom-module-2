@@ -123,7 +123,7 @@ router
   })
   .on("/search", async () => {
     searchPage.init();
-    await searchPage.update();
+    // await searchPage.update();
     hideLoading();
   })
   .on("/videos/details/:id", async ({ data }) => {

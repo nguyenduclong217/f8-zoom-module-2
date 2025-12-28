@@ -3,6 +3,7 @@ import { listAlbum1 } from "../../Services/auth.service";
 
 export const albumList1 = (mood) => ({
   init: async function () {
+    window.scrollTo({ top: 0 });
     this.slug = mood;
     const container = document.querySelector(".content");
     container.innerHTML = this.template();

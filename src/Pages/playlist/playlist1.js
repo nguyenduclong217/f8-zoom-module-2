@@ -3,6 +3,7 @@ import { listItemsQuick } from "../../Services/auth.service";
 
 export const playList1 = (mood) => ({
   init: async function () {
+    window.scrollTo({ top: 0 });
     const container = document.querySelector(".content");
     container.innerHTML = this.template();
     this.slug = mood;

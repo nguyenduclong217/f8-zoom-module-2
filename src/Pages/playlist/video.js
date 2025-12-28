@@ -17,6 +17,7 @@ import {
 } from "./youtubeApi/youtubePlayer";
 export const videoPage = (id) => ({
   async init() {
+    window.scrollTo({ top: 0 });
     const container = document.querySelector(".content");
     container.innerHTML = this.template();
     this.id = id;
@@ -38,10 +39,8 @@ export const videoPage = (id) => ({
     const data = await videoPage1(this.id);
     const playList = data.related;
     const playListVideos = [data, ...playList];
-    playerStore.playList = playListVideos;
-    console.log(playerStore);
     console.log(playListVideos);
-
+    playerStore.playList = playListVideos;
     const pageLeft = document.querySelector("#page-left");
     pageLeft.innerHTML = `
       <div id="video-container"></div>
@@ -108,13 +107,12 @@ export const videoPage = (id) => ({
       `;
     this.updateVideoInfo();
     //Page-right
-
-    if (window.YT && window.YT.Player) {
-      createPlayer(
-        "video-container",
-        playListVideos[playerStore.currentIndex].videoId
-      );
-    }
+    // if (window.YT && window.YT.Player) {
+    //   createPlayer(
+    //     "video-container",
+    //     playListVideos[playerStore.currentIndex].videoId
+    //   );
+    // }
 
     document.addEventListener("player-ready", () => {
       startProgress();
@@ -222,7 +220,14 @@ export const videoPage = (id) => ({
         song.updateVideoInfo();
       });
     }
+    // Xac nhan co du lieu hay khong
+    const video = playListVideos[playerStore.currentIndex];
     this.renderTask(playListVideos);
+    if (video.videoId && window.YT && window.YT.Player) {
+      createPlayer("video-container", video.videoId);
+    } else {
+      this.renderEmptyPlayer();
+    }
 
     function formatTime(seconds) {
       const h = Math.floor(seconds / 3600);
@@ -245,10 +250,17 @@ export const videoPage = (id) => ({
     const pageRight = document.querySelector("#page-right");
     if (!pageRight) return;
 
-    function calculateTime(seconds) {
-      const minutes = Math.floor(seconds / 60);
-      const secs = seconds % 60;
-      return `${minutes}:${secs.toString().padStart(2, "0")}`;
+    function formatTime(seconds) {
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = Math.floor(seconds % 60);
+      if (h > 0) {
+        return `${h}:${m.toString().padStart(2, "0")}:${s
+          .toString()
+          .padStart(2, "0")}`;
+      }
+
+      return `${m}:${s.toString().padStart(2, "0")}`;
     }
     sessionStorage.setItem("allowAutoPlay", "true");
     pageRight.innerHTML = tasks
@@ -285,7 +297,7 @@ export const videoPage = (id) => ({
         Khong ro
       </span>
     </div>
-    <span class="text-xs text-white/40">${calculateTime(task.duration)}</span>
+    <span class="text-xs text-white/40">${formatTime(task.duration)}</span>
   </div>
   
       `
@@ -324,5 +336,15 @@ export const videoPage = (id) => ({
     const titleEl = document.querySelector("#title");
     if (!titleEl) return;
     titleEl.textContent = playerStore.playList[playerStore.currentIndex].title;
+  },
+  renderEmptyPlayer() {
+    const container = document.querySelector("#video-container");
+    if (!container) return;
+
+    container.innerHTML = `
+    <div class="w-full h-[360px] flex items-center justify-center text-white/60 bg-black/30 rounded-xl">
+      <p>Bài hát này không có video 🎵</p>
+    </div>
+  `;
   },
 });

@@ -10,6 +10,7 @@ import {
 
 export const linesList = (mood) => ({
   init: async function () {
+    window.scrollTo({ top: 0 });
     this.slug = mood;
     const container = document.querySelector(".content");
     container.innerHTML = this.template();

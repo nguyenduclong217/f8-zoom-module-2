@@ -12,6 +12,9 @@ export const search = () => ({
     if (!container) return;
     container.innerHTML = this.template();
     this.paginate();
+    requestAnimationFrame(() => {
+      this.update();
+    });
   },
 
   async update() {
@@ -23,7 +26,8 @@ export const search = () => ({
     if (!keyword) return;
 
     const data = await pageSearch(keyword, limit, page);
-    console.log(data);
+    console.log(data.results);
+
     const pageNumber = Math.ceil(data.total / limit);
     console.log(pageNumber);
     this.renderPaginate(pageNumber);
@@ -40,7 +44,7 @@ export const search = () => ({
     list.innerHTML = data.results
       .map(
         (item) => `
-      <a href="/songs/details/${item.id}" data-navigo class="py-3 border-b border-white/10 flex items-center gap-3">
+      <a href="" data-type="${item.type}"  data-id="${item.id}" data-slug="${item.slug}" data-navigo class="py-3 border-b border-white/10 flex items-center gap-3">
         <img src="${item.thumbnails[0]}" alt="${item.title}" class="w-12 h-12 object-cover rounded"/>
         <div>
           <p class="font-medium text-white">${item.title}</p>
@@ -51,6 +55,7 @@ export const search = () => ({
       )
       .join("");
     router.updatePageLinks();
+    this.link();
   },
 
   template() {
@@ -63,6 +68,24 @@ export const search = () => ({
         </div>
       </div>
     `;
+  },
+
+  link() {
+    const links = document.querySelectorAll("#list a");
+
+    links.forEach((el) => {
+      const { id, type, slug } = el.dataset;
+
+      if (type === "album" || type === "song" || type === "playlist") {
+        el.href = `/songs/details/${id}`;
+      }
+      if (type === "playlist") {
+        el.href = `playlists/details/${slug}`;
+      }
+      if (type === "video") {
+        el.href = `/videos/details/${id}`;
+      }
+    });
   },
 
   renderPaginate(pageNumber) {

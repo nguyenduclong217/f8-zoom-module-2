@@ -2,6 +2,7 @@ import { listQuick, musicVnApi, playlists } from "../../Services/auth.service";
 
 export const MoodPage = (mood) => ({
   init: async function () {
+    window.scrollTo({ top: 0 });
     this.mood = mood;
     this.slug = mood;
 

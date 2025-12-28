@@ -3,6 +3,7 @@ import { topSinger, topVideo } from "../../Services/auth.service";
 
 export const charts = () => ({
   init: async function () {
+    window.scrollTo({ top: 0 });
     this.region = "GLOBAL";
     const container = document.querySelector(".content");
     container.innerHTML = this.template();

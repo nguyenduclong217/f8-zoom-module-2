@@ -3,6 +3,7 @@ import { newReleases, newVideos } from "../../Services/auth.service";
 // import { router } from "../routerr";
 export const new_releases = () => ({
   init: async function () {
+    window.scrollTo({ top: 0 });
     const container = document.querySelector(".content");
     container.innerHTML = this.template();
     await Promise.all([this.getData(), this.getData2()]);

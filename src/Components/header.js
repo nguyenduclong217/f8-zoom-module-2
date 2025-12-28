@@ -284,7 +284,7 @@ export const Header = () => ({
     hintImg.innerHTML = imgs
       .map(
         (img) => `
-        <a href="/songs/details/${img.id}" data-navigo
+        <a href="" data-navigo  data-type="${img.type}"  data-id="${img.id}" data-slug="${img.slug}"
      class="flex items-center gap-1 p-1 rounded hover:bg-gray-700 transition"
   >
     <img
@@ -306,30 +306,26 @@ export const Header = () => ({
       )
       .join("");
     router.updatePageLinks();
+    this.link();
+  },
+  link() {
+    const links = document.querySelectorAll("#hintImg a");
+
+    links.forEach((el) => {
+      const { id, type, slug } = el.dataset;
+
+      if (type === "album" || type === "song") {
+        el.href = `/songs/details/${id}`;
+      }
+      if (type === "playlist") {
+        el.href = `playlists/details/${slug}`;
+      } else {
+        el.href = `/videos/details/${id}`;
+      }
+    });
   },
 
-  // handleSearch() {
-  //   const boxSearch = document.querySelector("#suggestions");
-  //   document.addEventListener("keydown", (e) => {
-  //     if (e.key !== "Enter") return;
-
-  //     const input = document.activeElement;
-  //     if (!input || input.id !== "search") return;
-
-  //     e.preventDefault();
-
-  //     const keyword = input.value.trim();
-  //     if (!keyword) return;
-
-  //     console.log("ENTER SEARCH:", keyword);
-  //     boxSearch.innerHTML = "";
-
-  //     router.navigate(`/search?q=${encodeURIComponent(keyword)}`);
-  //     router.resolve();
-  //   });
-  // },
   handleSearch() {
-    // const boxSearch = document.querySelector("#suggestions");
     const inputSearch = document.querySelector("#search");
     const boxSearch = document.querySelector("#suggestions");
     if (!inputSearch || !boxSearch) return;
@@ -348,14 +344,6 @@ export const Header = () => ({
       if (!keyword) return;
 
       const url = `/search?q=${encodeURIComponent(keyword)}`;
-
-      if (location.pathname === "/search") {
-        history.pushState({}, "", url);
-
-        searchPage.init();
-        await searchPage.update();
-        return;
-      }
       router.navigate(url);
     });
   },

@@ -2,6 +2,7 @@ import { listAlbumPlay } from "../../Services/auth.service";
 
 export const musicPlay1 = (id) => ({
   init: async function () {
+    window.scrollTo({ top: 0 });
     const container = document.querySelector(".content");
     container.innerHTML = this.template();
     this.id = id;

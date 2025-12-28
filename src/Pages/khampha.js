@@ -2,6 +2,7 @@ import { list_moods, newAlbums, newVideos } from "../Services/auth.service";
 import { router } from "../routerr";
 export const khamPha = () => ({
   init: async function () {
+    window.scrollTo({ top: 0 });
     const container = document.querySelector(".content");
     container.innerHTML = this.template();
     await Promise.all([this.getData(), this.getData2(), this.getData3()]);
@@ -110,6 +111,7 @@ export const khamPha = () => ({
   },
   renderTask2(tasks) {
     const taskListEl = document.querySelector(".newVideo");
+    console.log(tasks);
     taskListEl.innerHTML = tasks
       .map((task) => {
         const viewK = Math.floor(task.views / 1000);
@@ -204,7 +206,6 @@ export const khamPha = () => ({
     // document.querySelector(".list-moods").addEventListener("click", (e) => {
     //   const item = e.target.closest("[data-id]");
     //   if (!item) return;
-
     //   const id = item.dataset.id;
     //   const type = item.dataset.type;
     // });
