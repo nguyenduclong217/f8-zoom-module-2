@@ -196,20 +196,20 @@ export const videoPage = (id) => ({
         currentTime.textContent = formatTime(time);
       });
     }
-    // const song = videoPage(id);
+    const song = videoPage(id);
     function setupNextBtn() {
       const nextBtn = document.querySelector("#next-right");
       nextBtn.addEventListener("click", () => {
         nextSong();
-        this.updateActiveSong();
-        this.updateVideoInfo();
+        song.updateActiveSong();
+        song.updateVideoInfo();
       });
 
       const prevBtn = document.querySelector("#next-left");
       prevBtn.addEventListener("click", () => {
         prevSong();
-        this.updateActiveSong();
-        this.updateVideoInfo();
+        song.updateActiveSong();
+        song.updateVideoInfo();
       });
     }
     // Xac nhan co du lieu hay khong
