@@ -85,7 +85,7 @@ export const Home = () => ({
     </div>
     </div>
      </div>
-     <div class=" flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth p-4">
+     <div class="today-albums flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth p-4">
      </div>
     </section>
 
@@ -196,8 +196,10 @@ export const Home = () => ({
       <img src="${task.thumbnails}" alt="img" class=" w-full h-full object-cover">
       <div class="overlay absolute inset-0 flex bg-black/50 justify-center opacity-0 group-hover:opacity-100 transition">
       <span class="play text-[1.3rem] text-white/60 flex items-center"><i class="fa-regular fa-circle-play"></i></span>
+    </div>
+
       </div>
-      </div>
+
       <div class="mt-2">
       <h3 class="text-sm text-white font-semibold">${task.title}</h3>
       <p class="text-sm text-white/40">${task.artists} </p>
