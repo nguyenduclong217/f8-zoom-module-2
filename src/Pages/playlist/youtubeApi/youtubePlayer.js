@@ -100,3 +100,13 @@ export function onStateChange(e) {
 export function getCurrentState() {
   return currentState;
 }
+
+export function setVolume(value) {
+  if (!player) return;
+  player.setVolume(value);
+}
+
+export function getVolume() {
+  if (!player) return 100;
+  return player.getVolume();
+}

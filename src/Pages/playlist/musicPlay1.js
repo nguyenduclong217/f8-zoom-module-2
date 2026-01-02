@@ -148,8 +148,6 @@ export const musicPlay1 = (id) => ({
 
       const audio = document.querySelector("#audio");
 
-      audio.src = songEl.dataset.audio;
-
       try {
         await audio.play();
       } catch (err) {

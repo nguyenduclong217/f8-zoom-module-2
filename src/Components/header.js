@@ -78,7 +78,7 @@ export const Header = () => ({
   <i class="fa-solid fa-xmark text-[19px]"></i>
   </button>
   <div class="flex items-center gap-2">
-  <img src="./public/images/logo (2).png" alt="logo" class="w-[35px]">
+  <img src="/public/images/logo (2).png" alt="logo" class="w-[35px]">
   <span class="text-xl font-semibold tracking-tight">Music</span>
   </div>
   </div>

@@ -89,7 +89,7 @@ export const playMusic = () => ({
       <button id="volume" class="w-10 h-10 hover:bg-white/20 rounded-full"><i class="fa-solid fa-volume-high"></i></button>
       </div>
         <button id="loop" class="w-10 h-10 hover:bg-white/20 rounded-full"><i class="fa-solid fa-repeat"></i></button>
-        <button  class="w-10 h-10 hover:bg-white/20 rounded-full"><i class="fa-solid fa-shuffle"></i></button>
+        <button id="random" class="w-10 h-10 hover:bg-white/20 rounded-full"><i class="fa-solid fa-shuffle"></i></button>
       </div>
 
     </div></div>
@@ -111,6 +111,7 @@ export const playMusic = () => ({
     const btnLoop = document.querySelector("#loop");
     const btnLeft = document.querySelector("#next-left");
     const btnRight = document.querySelector("#next-right");
+    const btnRandom = document.querySelector("#random");
 
     let currentSongId = null;
     document.addEventListener("play-music", (e) => {
@@ -128,6 +129,7 @@ export const playMusic = () => ({
         el.classList.toggle("active", i === index);
       });
       document.querySelector("#playBar").classList.remove("hidden");
+      document.querySelector("#playBarVideo").classList.add("hidden");
       audio.play().catch(() => {
         console.log("Browser chặn autoplay, cần user gesture");
       });
@@ -243,6 +245,8 @@ export const playMusic = () => ({
     btnRight.addEventListener("click", () => {
       if (currentIndex < playlist.length - 1) {
         playByIndex(currentIndex + 1);
+      } else {
+        playByIndex(0);
       }
     });
 
@@ -251,10 +255,18 @@ export const playMusic = () => ({
         playByIndex(currentIndex - 1);
       }
     });
+    btnRandom.addEventListener("click", () => {
+      if (!playlist.length) return;
+
+      const randomIndex = Math.floor(Math.random() * playlist.length);
+      playByIndex(randomIndex);
+    });
 
     audio.addEventListener("ended", () => {
       if (currentIndex < playlist.length - 1) {
         playByIndex(currentIndex + 1);
+      } else {
+        playByIndex(0);
       }
     });
 

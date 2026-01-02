@@ -19,6 +19,7 @@ import { linesList } from "./Pages/listAlbum/linesList";
 // import { pageSearch } from "./Services/auth.service";
 import { search, searchPage } from "./Pages/pageSearch";
 import { videoPage } from "./Pages/playlist/video";
+
 // import { videoPage } from "./Pages/playlist/video";
 export const router = new Navigo("/");
 
@@ -36,6 +37,8 @@ router
   .on("/", async () => {
     const home = Home();
     await home.init();
+    // mountPlayerToMini();
+    // showMiniPlayer("mini");
     hideLoading();
   })
   .on("/login", async () => {

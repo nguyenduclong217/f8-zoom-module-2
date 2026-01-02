@@ -1,6 +1,14 @@
 // cac nut chuc nang
-import { loadVideo, loadVideo3 } from "./youtubePlayer";
+import {
+  createPlayer,
+  getCurrentState,
+  loadVideo,
+  loadVideo3,
+  pause,
+  play,
+} from "./youtubePlayer";
 import { playerStore } from "./playerStore";
+// import { showMiniPlayer } from "./miniPlayer";
 
 export function playIndex(index) {
   playerStore.currentIndex = index;
@@ -32,3 +40,35 @@ export function prevSong() {
   const prevVideo = playList[playerStore.currentIndex];
   loadVideo3(prevVideo.videoId);
 }
+
+let ytReady = false;
+
+document.addEventListener("play-video", (e) => {
+  const { videoId } = e.detail;
+
+  if (!ytReady) {
+    createPlayer("yt-player", videoId);
+    ytReady = true;
+  } else {
+    loadVideo3(videoId);
+  }
+  // mặc định thu nhỏ
+});
+
+// play va pause
+
+document.addEventListener("player:toggle", () => {
+  const state = getCurrentState();
+
+  if (state === YT.PlayerState.PLAYING) {
+    pause();
+    document.dispatchEvent(
+      new CustomEvent("player:state", { detail: "paused" })
+    );
+  } else {
+    play();
+    document.dispatchEvent(
+      new CustomEvent("player:state", { detail: "playing" })
+    );
+  }
+});

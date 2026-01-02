@@ -1,5 +1,6 @@
 import { router } from "../../routerr";
 import { videoPage1 } from "../../Services/auth.service";
+// import { showMiniPlayer } from "./youtubeApi/miniPlayer";
 import { playerStore } from "./youtubeApi/playerStore";
 import { nextSong, prevSong } from "./youtubeApi/playlistController";
 import {
@@ -21,6 +22,16 @@ export const videoPage = (id) => ({
     container.innerHTML = this.template();
     this.id = id;
     await this.loadQuickPicks();
+    this.mountPlayerToDetail();
+  },
+  mountPlayerToDetail() {
+    const stage = document.querySelector("#video-stage");
+    const root = document.querySelector("#player-root");
+
+    if (!stage || !root) return;
+
+    stage.appendChild(root);
+    root.style.display = "block";
   },
 
   template() {
@@ -28,10 +39,11 @@ export const videoPage = (id) => ({
     <div class ="relative ml-35 w-[87%] mt-12 flex justify-between ">
     <div class ="w-[63%]">
     <div id="page-left" class=" flex flex-col items-center sticky top-20">
+    <div id="video-container"></div>
     </div></div>
     <div id="page-right" class="w-[35%]"></div>
     </div>
-    `;
+`;
   },
 
   async loadQuickPicks() {
@@ -39,13 +51,29 @@ export const videoPage = (id) => ({
     const playList = data.related;
     const playListVideos = [data, ...playList];
     console.log(playListVideos);
+    const firstVideo = playListVideos[0];
+    // lay du lieu bai hat hien tai
+    document.dispatchEvent(
+      new CustomEvent("play-video", {
+        detail: {
+          videoId: firstVideo.videoId,
+          img: firstVideo.thumbnails[0],
+          title: firstVideo.title,
+          id: firstVideo.id,
+          playList: playListVideos,
+          index: 0,
+        },
+      })
+    );
+
     playerStore.playList = playListVideos;
     const pageLeft = document.querySelector("#page-left");
     pageLeft.innerHTML = `
-      <div id="video-container"></div>
-      <div class="mt-4 w-[100%]">
+      <div class="mt-4 h-[70%]">
+       <div id="video-stage" class="w-[100%] h-[360px] bg-black rounded-xl"></div>
+
       <div>
-      <h1 id="title" class="text-center text-white font-semibold text-[1.7rem]"></h1>
+      <h1 id="" class="text-center text-white font-semibold text-[1.7rem]"></h1>
       <p class="text-center text-white font-semibold" >Không rõ</p>
       </div>
 
@@ -111,8 +139,10 @@ export const videoPage = (id) => ({
       setupNextBtn();
       setupVolumeBtn();
     });
-    const container = document.querySelector("#video-container");
-    container.innerHTML = "";
+    // const container = document.querySelector("#video-container");
+    // container.innerHTML = "";
+
+    // Bai hat duoc click
 
     function setupPlayBtn() {
       const playBtn = document.querySelector("#playBtn");
@@ -197,6 +227,7 @@ export const videoPage = (id) => ({
       });
     }
     const song = videoPage(id);
+    console.log(song);
     function setupNextBtn() {
       const nextBtn = document.querySelector("#next-right");
       nextBtn.addEventListener("click", () => {
@@ -227,7 +258,7 @@ export const videoPage = (id) => ({
       return;
     }
 
-    createPlayer("video-container", videoId);
+    // showMiniPlayer("large");
 
     function formatTime(seconds) {
       const h = Math.floor(seconds / 3600);
@@ -266,8 +297,9 @@ export const videoPage = (id) => ({
     pageRight.innerHTML = tasks
       .map(
         (task, index) => `
-         <div data-navigo 
-    data-video-id="${task.videoId}" data-index="${index}"
+         <div data-navigo data-video-id="${task.videoId}"
+ data-index="${index}" data-="${task.title}"
+        data-img ="${task.thumbnails[0]}" data-id="${task.id}"
     class="group flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 transition"
   >
   
@@ -305,6 +337,27 @@ export const videoPage = (id) => ({
       .join("");
     router.updatePageLinks();
     this.updateActiveSong();
+    pageRight.addEventListener("click", (e) => {
+      const videoEl = e.target.closest(".group");
+      if (!videoEl || !pageRight.contains(videoEl)) return;
+      console.log(videoEl.dataset.img);
+
+      e.preventDefault();
+
+      document.dispatchEvent(
+        new CustomEvent("play-video", {
+          detail: {
+            videoId: videoEl.dataset.videoId,
+            img: videoEl.dataset.img,
+            title: videoEl.dataset.title,
+            playList: tasks,
+            index: Number(videoEl.dataset.index),
+            id: videoEl.dataset.id,
+          },
+        })
+      );
+    });
+
     pageRight.addEventListener("click", (e) => {
       const item = e.target.closest("[data-video-id]");
       if (!item) return;
